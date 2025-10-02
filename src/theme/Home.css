@@ -1,0 +1,112 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  min-height: 100vh;
+  background: #0a0a0a;
+}
+
+.users-card {
+  max-width: 500px;
+  width: 100%;
+  background: #1a1a1a;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  margin: 0;
+}
+
+.users-card ion-card-header {
+  padding: 20px 20px 10px 20px;
+}
+
+.users-card ion-card-title {
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.users-card ion-card-content {
+  padding: 10px 20px 20px 20px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  color: #888;
+}
+
+.loading-container p {
+  margin-top: 15px;
+  font-size: 0.9rem;
+}
+
+.user-row {
+  margin-bottom: 12px;
+}
+
+.user-item {
+  background: #2a2a2a;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #4a4a4a;
+}
+
+.user-email {
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 1rem;
+  margin-bottom: 6px;
+}
+
+.user-password {
+  color: #888;
+  font-size: 0.85rem;
+  font-family: monospace;
+  background: #333;
+  padding: 4px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Efectos hover sutiles */
+.user-item:hover {
+  background: #2d2d2d;
+  transition: background 0.2s ease;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+
+  .users-card {
+    max-width: 100%;
+  }
+}
+.users-header {
+  display: flex;
+  justify-content: space-between; /* separa título y botón */
+  align-items: center;
+  padding: 0 12px;
+}
+
+.logout-button {
+  --border-radius: 12px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --padding-top: 6px;
+  --padding-bottom: 6px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.logout-button.ion-color-danger {
+  --color: #e53935;
+  --border-color: #e53935;
+}

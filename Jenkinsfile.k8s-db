@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = 'C:\\ProgramData\\Jenkins\\.kube\\config'
+    }
+
+
+    stages {
+        stage('Aplicar Configuración Frontend') {
+            steps {
+                script {
+                    echo '🚀 Iniciando despliegue del Frontend en Kubernetes...'
+
+                    bat 'echo 🧱 Aplicando Deployment...'
+                    bat 'kubectl apply -f frontend.yaml --validate=false'
+
+                    bat 'echo 🌐 Aplicando Service...'
+                    bat 'kubectl apply -f service.yaml --validate=false'
+                }
+            }
+        }
+
+        stage('Verificar Despliegue') {
+            steps {
+                script {
+                    echo '🔍 Verificando pods en ejecución...'
+                    bat 'kubectl get pods -n default'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo '✅ Despliegue completado exitosamente.'
+        }
+        failure {
+            echo '❌ Error durante el despliegue del Frontend.'
+        }
+    }
+}

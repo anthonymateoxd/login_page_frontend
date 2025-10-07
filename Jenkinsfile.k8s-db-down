@@ -1,0 +1,29 @@
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = 'C:\\ProgramData\\Jenkins\\.kube\\config'
+    }
+
+
+    stages {
+        stage('Eliminar recursos Frontend de Kubernetes') {
+            steps {
+                script {
+                    echo "🔻 Eliminando recursos Frontend del clúster..."
+                    bat 'kubectl delete -f frontend.yaml --ignore-not-found'
+                    bat 'kubectl delete -f service.yaml --ignore-not-found'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "✅ Recursos eliminados correctamente del clúster."
+        }
+        failure {
+            echo "❌ Ocurrió un error al eliminar los recursos. Revisa los logs."
+        }
+    }
+}

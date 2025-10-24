@@ -2,41 +2,44 @@ pipeline {
     agent any
 
     environment {
-        KUBECONFIG = 'C:\\ProgramData\\Jenkins\\.kube\\config'
+        DOCKERHUB_USER = 'mateouni'
+        IMAGE_NAME = 'login-page-frontend'
+        IMAGE_TAG = 'latest'
     }
-
 
     stages {
-        stage('Aplicar Configuración Frontend') {
+        stage('Build Docker image') {
             steps {
+                echo 'Construyendo la imagen...'
                 script {
-                    echo '🚀 Iniciando despliegue del Frontend en Kubernetes...'
-
-                    bat 'echo 🧱 Aplicando Deployment...'
-                    bat 'kubectl apply -f frontend.yaml --validate=false'
-
-                    bat 'echo 🌐 Aplicando Service...'
-                    bat 'kubectl apply -f service.yaml --validate=false'
+                    bat "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
 
-        stage('Verificar Despliegue') {
-            steps {
-                script {
-                    echo '🔍 Verificando pods en ejecución...'
-                    bat 'kubectl get pods -n default'
+   stage('Push to DockerHub') {
+        steps {
+            echo 'Subiendo imagen...'
+            script {
+                withCredentials([usernamePassword(
+                    credentialsId: 'Docker-Hub-Credentials-Domain', 
+                    usernameVariable: 'DOCKERHUB_USER', 
+                    passwordVariable: 'DOCKERHUB_PASS'
+                )]) {
+                    bat "docker login -u %DOCKERHUB_USER% -p %DOCKERHUB_PASS%"
+                    bat "docker push %DOCKERHUB_USER%/my-backend-app:latest"
                 }
             }
         }
     }
+                }
 
     post {
         success {
-            echo '✅ Despliegue completado exitosamente.'
+            echo '✅ Despliegue completado correctamente.'
         }
         failure {
-            echo '❌ Error durante el despliegue del Frontend.'
+            echo '❌ Hubo un error durante el pipeline.'
         }
     }
 }

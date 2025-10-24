@@ -30,14 +30,6 @@
 # # Solo para debug (luego lo quitas)
 # CMD ["ls", "-l", "/app/dist"]
 
-
-
-
-
-
-
-
-
 # Build stage
 FROM node:18-alpine AS build
 

@@ -27,7 +27,7 @@ pipeline {
                     passwordVariable: 'DOCKERHUB_PASS'
                 )]) {
                     bat "docker login -u %DOCKERHUB_USER% -p %DOCKERHUB_PASS%"
-                    bat "docker push %DOCKERHUB_USER%/my-backend-app:latest"
+                    bat "docker push %DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG%"
                 }
             }
         }

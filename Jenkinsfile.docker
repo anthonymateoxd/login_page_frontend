@@ -7,6 +7,10 @@ pipeline {
         IMAGE_TAG = 'latest'
     }
 
+    triggers {
+        githubPush()
+    }
+
     stages {
         stage('Build Docker image') {
             steps {

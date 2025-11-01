@@ -3,31 +3,28 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
-# Instalamos dependencias del sistema mínimas
 RUN apk add --no-cache python3 make g++
 
-# Copiamos dependencias primero
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Instalamos Ionic CLI (solo necesario para build/serve)
 RUN npm install -g @ionic/cli
 
-# Copiamos el resto del código
 COPY . .
 
-# Construimos el proyecto (esto genera dist/)
 RUN npm run build
 
-# Etapa 2: Imagen final (solo los archivos compilados)
-FROM alpine:3.18
+# Etapa 2: Servir el frontend
+FROM node:18-alpine
 
 WORKDIR /app
 
-# Copiamos la carpeta dist desde la etapa anterior
+# Instalamos un servidor estático simple
+RUN npm install -g http-server
+
 COPY --from=build /app/dist ./dist
 
 EXPOSE 8081
 
-# Solo para debug (luego lo quitas)
-CMD ["ls", "-l", "/app/dist"]
+# Servimos la carpeta dist en el puerto 8081
+CMD ["http-server", "dist", "-p", "8081"]

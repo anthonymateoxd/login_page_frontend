@@ -32,7 +32,6 @@ EXPOSE 80
 # Iniciar Nginx
 CMD ["nginx", "-g", "daemon off;"]
 
-
 # Build React app
 # React build container (only builds)
 # FROM node:18-alpine

@@ -1,3 +1,53 @@
+// pipeline {
+//     agent any
+
+//     environment {
+//         DOCKERHUB_USER = 'mateouni'
+//         IMAGE_NAME = 'login-page-frontend'
+//         IMAGE_TAG = 'latest'
+//     }
+
+//     triggers {
+//         githubPush()
+//     }
+
+//     stages {
+//         stage('Build Docker image') {
+//             steps {
+//                 echo 'Construyendo la imagen...'
+//                 script {
+//                     bat "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
+//                 }
+//             }
+//         }
+
+//    stage('Push to DockerHub') {
+//         steps {
+//             echo 'Subiendo imagen...'
+//             script {
+//                 withCredentials([usernamePassword(
+//                     credentialsId: 'Docker-Hub-Credentials-Domain', 
+//                     usernameVariable: 'DOCKERHUB_USER', 
+//                     passwordVariable: 'DOCKERHUB_PASS'
+//                 )]) {
+//                     bat "docker login -u %DOCKERHUB_USER% -p %DOCKERHUB_PASS%"
+//                     bat "docker push %DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG%"
+//                 }
+//             }
+//         }
+//     }
+//                 }
+
+//     post {
+//         success {
+//             echo '✅ Despliegue completado correctamente.'
+//         }
+//         failure {
+//             echo '❌ Hubo un error durante el pipeline.'
+//         }
+//     }
+// }
+
 pipeline {
     agent any
 
@@ -7,11 +57,25 @@ pipeline {
         IMAGE_TAG = 'latest'
     }
 
-    triggers {
-        githubPush()
-    }
-
     stages {
+
+        stage('Docker Login') {
+            steps {
+                echo 'Iniciando sesión en DockerHub...'
+                script {
+                    withCredentials([usernamePassword(
+                        credentialsId: 'Docker-Hub-Credentials-Domain',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_PASS'
+                    )]) {
+                        bat """
+                            docker login -u %DOCKER_USER% -p %DOCKER_PASS%
+                        """
+                    }
+                }
+            }
+        }
+
         stage('Build Docker image') {
             steps {
                 echo 'Construyendo la imagen...'
@@ -21,22 +85,15 @@ pipeline {
             }
         }
 
-   stage('Push to DockerHub') {
-        steps {
-            echo 'Subiendo imagen...'
-            script {
-                withCredentials([usernamePassword(
-                    credentialsId: 'Docker-Hub-Credentials-Domain', 
-                    usernameVariable: 'DOCKERHUB_USER', 
-                    passwordVariable: 'DOCKERHUB_PASS'
-                )]) {
-                    bat "docker login -u %DOCKERHUB_USER% -p %DOCKERHUB_PASS%"
-                    bat "docker push %DOCKERHUB_USER%/%IMAGE_NAME%:%IMAGE_TAG%"
+        stage('Push to DockerHub') {
+            steps {
+                echo 'Subiendo imagen...'
+                script {
+                    bat "docker push ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
     }
-                }
 
     post {
         success {

@@ -15,3 +15,4 @@ COPY . .
 RUN npm run build
 
 # Exporta el build en /app/dist
+

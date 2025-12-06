@@ -1,18 +1,31 @@
-# Imagen build-only (no sirve archivos)
-FROM node:18-alpine
+# ---------- Stage 1: Build ----------
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copiar dependencias
-COPY package.json package-lock.json ./
+# Copiar archivos de dependencias
+COPY package*.json ./
 
+# Instalar TODO (incluye Vite)
 RUN npm ci
 
-# Copiar el código completo
+# Copiar proyecto completo
 COPY . .
 
-# Construir el dist de producción
+# Generar build
 RUN npm run build
 
-# Exporta el build en /app/dist
 
+# ---------- Stage 2: Runtime ----------
+FROM node:18-alpine AS runner
+
+WORKDIR /app
+
+# Instalar solo dependencias de producción
+COPY package*.json ./
+RUN npm ci --only=production
+
+# Copiar build generado
+COPY --from=builder /app/dist ./dist
+
+CMD ["node", "dist/index.js"]

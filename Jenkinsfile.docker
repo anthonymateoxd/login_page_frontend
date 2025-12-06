@@ -16,7 +16,7 @@ pipeline {
             steps {
                 echo 'Construyendo la imagen...'
                 script {
-                    bat "docker build -t ${DOCKERHUB_USER}/${IMAGE_NAME}:${IMAGE_TAG} ."
+                    bat "docker build -t mateouni/login-page-frontend:latest ."
                 }
             }
         }
